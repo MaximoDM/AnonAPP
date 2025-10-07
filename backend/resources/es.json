@@ -1,0 +1,13 @@
+{
+  "ERRORES": {
+    "FALTAN_CAMPOS": { "codigo": "faltan_campos", "mensaje": "Faltan campos obligatorios" },
+    "CREDENCIALES_INCORRECTAS": { "codigo": "credenciales_incorrectas", "mensaje": "Correo o clave incorrectos" },
+    "CORREO_DUPLICADO": { "codigo": "correo_existente_o_invalido", "mensaje": "El correo ya existe o no es válido" },
+    "TOKEN_INVALIDO": { "codigo": "token_invalido", "mensaje": "El token proporcionado no es válido" },
+    "NO_ENCONTRADO": { "codigo": "no_encontrado", "mensaje": "Recurso no encontrado" }
+  },
+  "OK": {
+    "REGISTRO": { "codigo": "usuario_registrado", "mensaje": "Usuario registrado correctamente" },
+    "LOGIN": { "codigo": "login_correcto", "mensaje": "Inicio de sesión correcto" }
+  }
+}
