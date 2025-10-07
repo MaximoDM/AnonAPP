@@ -1,0 +1,82 @@
+<ion-header>
+  <ion-toolbar color="light">
+    <ion-title class="ion-text-center">Mensajes recibidos</ion-title>
+    <ion-buttons slot="end">
+      <ion-button routerLink="/profile">
+        <ion-icon slot="icon-only" name="person-circle-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+
+<ion-content [fullscreen]="true" class="ion-padding">
+  <ion-list>
+    <ion-card *ngFor="let msg of mensajes" class="mensaje-card">
+      <ion-card-header>
+        <ion-card-subtitle>
+          {{ msg.esAnonimo ? 'Anónimo' : msg.autor }}
+        </ion-card-subtitle>
+        <ion-note>{{ msg.fecha | date:'short' }}</ion-note>
+      </ion-card-header>
+
+      <ion-card-content>
+        <p class="texto">{{ msg.texto }}</p>
+
+        <div *ngIf="msg.respuesta" class="respuesta">
+          <strong>Tú:</strong> {{ msg.respuesta }}
+        </div>
+
+        <ion-buttons *ngIf="!msg.respuesta" class="acciones">
+          <ion-button color="primary" fill="outline" (click)="abrirModal(msg)">
+            Responder
+          </ion-button>
+          <ion-button color="medium" fill="clear" (click)="descartar(msg)">
+            Descartar
+          </ion-button>
+        </ion-buttons>
+      </ion-card-content>
+    </ion-card>
+  </ion-list>
+
+  <!-- Modal de respuesta -->
+  <ion-modal [isOpen]="modalAbierto" (didDismiss)="cerrarModal()">
+    <ng-template>
+      <ion-header>
+        <ion-toolbar>
+          <ion-title>Responder mensaje</ion-title>
+          <ion-buttons slot="end">
+            <ion-button (click)="cerrarModal()">Cerrar</ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+
+      <ion-content class="ion-padding">
+        <ion-item lines="none">
+          <ion-label>
+            <h2>{{ mensajeActual?.esAnonimo ? 'Anónimo' : mensajeActual?.autor }}</h2>
+            <p>{{ mensajeActual?.fecha | date:'short' }}</p>
+          </ion-label>
+        </ion-item>
+
+        <ion-card class="mensaje-card">
+          <ion-card-content>
+            <p class="texto">{{ mensajeActual?.texto }}</p>
+          </ion-card-content>
+        </ion-card>
+
+        <ion-item lines="none">
+          <ion-textarea
+            placeholder="Escribe tu respuesta..."
+            [(ngModel)]="respuestaTemporal"
+            autoGrow="true">
+          </ion-textarea>
+        </ion-item>
+
+        <ion-button expand="block" color="primary" (click)="enviarRespuesta()">
+          Enviar respuesta
+        </ion-button>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+</ion-content>

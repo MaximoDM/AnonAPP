@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
+import { MessagesService } from './messages.service';
 
-import { Bicycleservice } from './bicycleservice';
 
-describe('Bicycleservice', () => {
-  let service: Bicycleservice;
+describe('Messages', () => {
+  let service: MessagesService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(Bicycleservice);
+    service = TestBed.inject(MessagesService);
   });
 
   it('should be created', () => {

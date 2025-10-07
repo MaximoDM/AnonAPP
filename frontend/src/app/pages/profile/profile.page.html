@@ -1,0 +1,35 @@
+<ion-header>
+  <ion-toolbar color="light">
+    <ion-title class="ion-text-center">{{ usuario.nombre }}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="abrirAjustes()">
+        <ion-icon slot="icon-only" name="settings-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="ion-padding">
+  <div class="perfil-info ion-text-center">
+    <ion-avatar>
+      <img [src]="usuario.avatar" alt="avatar" />
+    </ion-avatar>
+    <h2>{{ usuario.nombre }}</h2>
+    <p class="bio">{{ usuario.bio }}</p>
+  </div>
+
+  <ion-list>
+    <ion-card *ngFor="let r of respuestas" class="respuesta-card">
+      <ion-card-header>
+        <ion-card-subtitle>{{ r.autor }}</ion-card-subtitle>
+        <ion-note>{{ r.fecha | date:'short' }}</ion-note>
+      </ion-card-header>
+      <ion-card-content>
+        <p class="pregunta">“{{ r.texto }}”</p>
+        <div class="respuesta">
+          <strong>Tú:</strong> {{ r.respuesta }}
+        </div>
+      </ion-card-content>
+    </ion-card>
+  </ion-list>
+</ion-content>
