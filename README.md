@@ -3,7 +3,7 @@
 **AnonApp** es una aplicación moderna inspirada en *Ask.fm*, que permite a los usuarios enviarse preguntas de forma anónima o identificada.  
 Cada persona tiene un perfil público con su propio feed de mensajes y respuestas, fomentando la interacción social de manera divertida, segura y controlada.
 
-Desarrollada con **Node.js, Express y MongoDB** en el backend, y **Ionic + Angular** en el frontend, AnonApp combina simplicidad, diseño mobile-first y una API REST modular.
+Desarrollada con **Node.js, Express y Sequelize (MySQL/MariaDB)** en el backend, y **Ionic + Angular** en el frontend, AnonApp combina simplicidad, diseño mobile-first y una API REST modular.
 
 ---
 
@@ -22,14 +22,14 @@ El objetivo es **dar voz a las preguntas** de forma segura y entretenida, manten
 
 ## ✨ Características principales
 
-- 🔐 Registro e inicio de sesión con JWT.
-- 👤 Perfiles públicos con feed personalizable.
-- 💬 Envío de mensajes anónimos o con usuario identificado.
-- 💭 Respuestas públicas o privadas (decididas por el receptor).
-- ❤️ Sistema de votos y reacciones.
-- 🧩 Roles de usuario (admin / usuario estándar).
-- ⚙️ Backend modular y seguro con Express + Mongoose.
-- 📱 Frontend adaptable con Ionic + Angular.
+- 🔐 Registro e inicio de sesión con **JWT**  
+- 👤 Perfiles públicos con feed personalizable  
+- 💬 Envío de mensajes **anónimos o con usuario identificado**  
+- 💭 Respuestas públicas o privadas (decididas por el receptor)  
+- ❤️ Sistema de **votos y reacciones**  
+- 🧩 Roles de usuario (**admin / user**)  
+- ⚙️ Backend modular y seguro con **Express + Sequelize**  
+- 📱 Frontend adaptable con **Ionic + Angular**
 
 ---
 
@@ -38,20 +38,22 @@ El objetivo es **dar voz a las preguntas** de forma segura y entretenida, manten
 AnonApp/
 ├── backend/
 │ ├── controllers/
-│ │ ├── usuario.controller.js
-│ │ ├── mensaje.controller.js
-│ │ └── perfil.controller.js
+│ │ ├── user.controller.js
+│ │ ├── message.controller.js
+│ │ └── profile.controller.js
 │ ├── middleware/
 │ │ └── auth.js
 │ ├── models/
-│ │ ├── usuario.js
-│ │ ├── mensaje.js
-│ │ └── voto.js
+│ │ ├── user.js
+│ │ ├── message.js
+│ │ └── vote.js
 │ ├── routes/
-│ │ ├── usuario.routes.js
-│ │ ├── mensaje.routes.js
-│ │ └── perfil.routes.js
-│ ├── resources/es.json
+│ │ ├── user.routes.js
+│ │ ├── message.routes.js
+│ │ └── profile.routes.js
+│ ├── config/
+│ │ ├── database.js
+│ │ └── jwt.js
 │ └── index.js
 │
 └── frontend/ (Ionic + Angular)
@@ -65,17 +67,17 @@ AnonApp/
 ## 🧠 Flujo básico de uso
 
 1. **Registro o inicio de sesión**  
-   Los usuarios crean una cuenta con correo, contraseña y alias único.  
+   Los usuarios crean una cuenta con su **email**, **password** y **alias** único.  
 
 2. **Perfil público**  
-   Cada perfil muestra su avatar, biografía y feed con las preguntas respondidas.
+   Cada perfil muestra su avatar, biografía y feed con las preguntas respondidas.  
 
 3. **Envío de mensajes**  
    Cualquier usuario autenticado puede enviar una pregunta a otro perfil.  
-   El receptor decide si responderla públicamente o rechazarla.
+   El receptor decide si responderla públicamente o descartarla.  
 
 4. **Feed y visibilidad**  
-   Las preguntas respondidas se publican automáticamente en el feed del perfil del usuario.
+   Las preguntas respondidas se publican automáticamente en el feed del perfil del usuario.  
 
 5. **Votos y comunidad**  
    Los usuarios pueden votar o reaccionar a mensajes y respuestas visibles.
@@ -85,19 +87,19 @@ AnonApp/
 ## ⚙️ Tecnologías utilizadas
 
 ### 🔧 Backend
-- **Node.js** — entorno de ejecución.
-- **Express.js** — framework para la API REST.
-- **Mongoose** — modelado y conexión con MongoDB.
-- **JWT (jsonwebtoken)** — autenticación de usuarios.
-- **bcryptjs** — encriptación de contraseñas.
+- **Node.js** — entorno de ejecución  
+- **Express.js** — framework para la API REST  
+- **Sequelize ORM** — modelado y conexión con **MySQL/MariaDB**  
+- **JWT (jsonwebtoken)** — autenticación de usuarios  
+- **bcryptjs** — encriptación de contraseñas  
 
 ### 🎨 Frontend
-- **Ionic Framework** — interfaz móvil adaptable.
-- **Angular** — lógica de componentes y servicios.
-- **RxJS / HttpClient** — comunicación con el backend.
+- **Ionic Framework** — interfaz móvil adaptable  
+- **Angular** — lógica de componentes y servicios  
+- **RxJS / HttpClient** — comunicación con el backend  
 
 ### 🗄️ Base de datos
-- **MongoDB Atlas** — base de datos NoSQL alojada en la nube.
+- **MySQL / MariaDB** — base de datos relacional administrada con Sequelize ORM
 
 ---
 
@@ -105,51 +107,50 @@ AnonApp/
 
 | Método | Endpoint | Descripción |
 |--------|-----------|-------------|
-| **POST** | `/usuarios/registrar` | Registro de usuario |
-| **POST** | `/usuarios/login` | Autenticación |
-| **GET** | `/perfil/:alias` | Perfil público con feed |
-| **POST** | `/perfil/:alias/mensajes` | Enviar mensaje a un perfil |
-| **GET** | `/mensajes` | Listar mensajes recibidos |
-| **POST** | `/mensajes/:id/responder` | Responder a un mensaje |
-| **DELETE** | `/mensajes/:id/rechazar` | Rechazar un mensaje |
-| **POST** | `/mensajes/:id/votar` | Votar o reaccionar a una respuesta |
+| **POST** | `/api/users/register` | Registro de usuario |
+| **POST** | `/api/users/login` | Autenticación de usuario |
+| **GET** | `/api/profile/:alias` | Obtener perfil público con feed |
+| **POST** | `/api/profile/:alias/messages` | Enviar mensaje a un perfil |
+| **GET** | `/api/messages` | Listar mensajes recibidos |
+| **POST** | `/api/messages/:id/reply` | Responder a un mensaje |
+| **DELETE** | `/api/messages/:id/discard` | Descartar un mensaje |
+| **POST** | `/api/messages/:id/vote` | Votar o reaccionar a una respuesta |
 
 ---
 
 ## 🧩 Ejemplo rápido (Postman)
 
-**1. Registro**
+### 1️⃣ Registro
 ```json
-POST /usuarios/registrar
+POST /api/users/register
 {
-  "correo": "ejemplo@correo.com",
-  "clave": "1234",
+  "email": "ejemplo@correo.com",
+  "password": "1234",
   "alias": "pedro"
 }
+```
 
-
-POST /usuarios/login
+### 2️⃣ Inicio de sesión
+```
+POST /api/users/login
 {
-  "correo": "ejemplo@correo.com",
-  "clave": "1234"
+  "email": "ejemplo@correo.com",
+  "password": "1234"
 }
-
-
-POST /perfil/pedro/mensajes
+```
+### 3️⃣ Envío de mensaje
+```
+POST /api/profile/pedro/messages
 Header: Authorization: Bearer <token>
 {
-  "cuerpo": "¿Cuál fue tu experiencia más divertida?",
-  "anonimo": true
+  "body": "¿Cuál fue tu experiencia más divertida?",
+  "anonymous": true
 }
-
+```
 
 🧱 Estado actual del proyecto
 
-✅ Backend funcional con MongoDB y JWT.
-
-✅ Estructura completa de controladores y rutas.
-
-⚙️ Integración con frontend en desarrollo (Ionic + Angular).
-
-🚀 Próximas mejoras: notificaciones, sistema de seguidores y ranking de usuarios.
-
+✅ Backend funcional con Sequelize y JWT
+✅ Controladores, modelos y rutas implementadas
+⚙️ Integración con el frontend Ionic + Angular en desarrollo
+🚀 Próximas mejoras: notificaciones, sistema de seguidores y ranking de usuarios
