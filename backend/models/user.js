@@ -31,8 +31,6 @@ module.exports = (sequelize, Sequelize) => {
         type: Sequelize.INTEGER,
         defaultValue: 0,
       },
-      lastMessageAt: Sequelize.DATE,
-      deletedAt: Sequelize.DATE,
     },
     {
       tableName: "users",

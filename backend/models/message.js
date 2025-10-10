@@ -32,10 +32,6 @@ module.exports = (sequelize, Sequelize) => {
         type: Sequelize.INTEGER,
         defaultValue: 0,
       },
-      meta_ipHash: Sequelize.STRING,
-      meta_uaHash: Sequelize.STRING,
-      meta_ref: Sequelize.STRING,
-      deletedAt: Sequelize.DATE,
     },
     {
       tableName: "messages",

@@ -1,16 +1,6 @@
-const crypto = require("crypto");
 const db = require("../models");
 const User = db.User;
 const Message = db.Message;
-
-// Helper: hash sensitive values
-function hash(v) {
-  return crypto
-    .createHash("sha256")
-    .update(String(process.env.IP_SALT || "salt") + ":" + String(v || ""))
-    .digest("hex")
-    .slice(0, 32);
-}
 
 // =====================================
 // GET /profile/:alias → public feed
@@ -63,17 +53,10 @@ exports.sendMessage = async (req, res) => {
     if (!body || body.length > 1000)
       return res.status(400).json({ error: "invalid_body" });
 
-    const ip = req.headers["x-forwarded-for"] || req.socket.remoteAddress || "";
-    const ua = req.headers["user-agent"] || "";
-    const ref = req.headers.referer || "";
-
     await Message.create({
       to: target.id,
       from: req.body.anonymous ? null : req.user.uid,
       body,
-      meta_ipHash: hash(ip),
-      meta_uaHash: hash(ua),
-      meta_ref: ref,
     });
 
     res.json({ ok: true });
