@@ -131,7 +131,7 @@ POST /api/users/register
 ```
 
 ### 2️⃣ Inicio de sesión
-```
+```json
 POST /api/users/login
 {
   "email": "ejemplo@correo.com",
@@ -139,7 +139,7 @@ POST /api/users/login
 }
 ```
 ### 3️⃣ Envío de mensaje
-```
+```json
 POST /api/profile/pedro/messages
 Header: Authorization: Bearer <token>
 {
