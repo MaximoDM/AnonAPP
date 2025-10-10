@@ -33,37 +33,6 @@ El objetivo es **dar voz a las preguntas** de forma segura y entretenida, manten
 
 ---
 
-## 🖼️ Arquitectura general
-
-AnonApp/
-├── backend/
-│ ├── controllers/
-│ │ ├── user.controller.js
-│ │ ├── message.controller.js
-│ │ └── profile.controller.js
-│ ├── middleware/
-│ │ └── auth.js
-│ ├── models/
-│ │ ├── user.js
-│ │ ├── message.js
-│ │ └── vote.js
-│ ├── routes/
-│ │ ├── user.routes.js
-│ │ ├── message.routes.js
-│ │ └── profile.routes.js
-│ ├── config/
-│ │ ├── database.js
-│ │ └── jwt.js
-│ └── index.js
-│
-└── frontend/ (Ionic + Angular)
-├── src/
-├── assets/
-└── environments/
-
-
----
-
 ## 🧠 Flujo básico de uso
 
 1. **Registro o inicio de sesión**  
