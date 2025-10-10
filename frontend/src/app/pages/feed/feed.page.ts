@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { MessagesService, Mensaje } from 'src/app/services/messages.service';
+import { MessagesService, Message } from 'src/app/services/messages.service';
 
 @Component({
   selector: 'app-feed',
@@ -8,38 +8,38 @@ import { MessagesService, Mensaje } from 'src/app/services/messages.service';
   styleUrls: ['./feed.page.scss']
 })
 export class FeedPage implements OnInit {
-  mensajes: Mensaje[] = [];
-  modalAbierto = false;
-  mensajeActual: Mensaje | null = null;
-  respuestaTemporal = '';
+  messages: Message[] = [];
+  modalOpen = false;
+  currentMessage: Message | null = null;
+  tempReply = '';
 
   constructor(private msgService: MessagesService) {}
 
   ngOnInit() {
-    this.mensajes = this.msgService.obtenerPendientes();
+    this.messages = this.msgService.getPending();
   }
 
-  abrirModal(msg: Mensaje) {
-    this.mensajeActual = msg;
-    this.respuestaTemporal = '';
-    this.modalAbierto = true;
+  openModal(msg: Message) {
+    this.currentMessage = msg;
+    this.tempReply = '';
+    this.modalOpen = true;
   }
 
-  cerrarModal() {
-    this.modalAbierto = false;
-    this.mensajeActual = null;
-    this.respuestaTemporal = '';
+  closeModal() {
+    this.modalOpen = false;
+    this.currentMessage = null;
+    this.tempReply = '';
   }
 
-  enviarRespuesta() {
-    if (!this.respuestaTemporal.trim() || !this.mensajeActual) return;
-    this.msgService.responder(this.mensajeActual, this.respuestaTemporal);
-    this.mensajes = this.msgService.obtenerPendientes();
-    this.cerrarModal();
+  sendReply() {
+    if (!this.tempReply.trim() || !this.currentMessage) return;
+    this.msgService.replyTo(this.currentMessage, this.tempReply);
+    this.messages = this.msgService.getPending();
+    this.closeModal();
   }
 
-  descartar(msg: Mensaje) {
-    this.msgService.descartar(msg);
-    this.mensajes = this.msgService.obtenerPendientes();
+  discard(msg: Message) {
+    this.msgService.discard(msg);
+    this.messages = this.msgService.getPending();
   }
 }

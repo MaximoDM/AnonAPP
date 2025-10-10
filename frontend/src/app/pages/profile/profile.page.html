@@ -1,8 +1,10 @@
 <ion-header>
   <ion-toolbar color="light">
-    <ion-title class="ion-text-center">{{ usuario.nombre }}</ion-title>
+    <ion-title class="ion-text-center">
+      {{ user.name || 'Profile' }}
+    </ion-title>
     <ion-buttons slot="end">
-      <ion-button (click)="abrirAjustes()">
+      <ion-button (click)="openSettings()" aria-label="Open settings">
         <ion-icon slot="icon-only" name="settings-outline"></ion-icon>
       </ion-button>
     </ion-buttons>
@@ -10,26 +12,44 @@
 </ion-header>
 
 <ion-content [fullscreen]="true" class="ion-padding">
-  <div class="perfil-info ion-text-center">
-    <ion-avatar>
-      <img [src]="usuario.avatar" alt="avatar" />
+  <div class="profile-info ion-text-center ion-margin-vertical">
+    <ion-avatar class="avatar-lg ion-margin-auto">
+      <img [src]="user.avatar || 'assets/default-avatar.png'" alt="avatar" />
     </ion-avatar>
-    <h2>{{ usuario.nombre }}</h2>
-    <p class="bio">{{ usuario.bio }}</p>
+
+    <h2 class="ion-margin-top">{{ user.name || 'Anonymous user' }}</h2>
+    <p class="bio" *ngIf="user.bio; else noBio">{{ user.bio }}</p>
+    <ng-template #noBio>
+      <p class="bio ion-text-center ion-text-muted">No bio.</p>
+    </ng-template>
   </div>
 
-  <ion-list>
-    <ion-card *ngFor="let r of respuestas" class="respuesta-card">
+  <ion-list *ngIf="replies.length > 0; else noReplies">
+    <ion-card *ngFor="let r of replies; trackBy: trackById" class="reply-card">
       <ion-card-header>
-        <ion-card-subtitle>{{ r.autor }}</ion-card-subtitle>
-        <ion-note>{{ r.fecha | date:'short' }}</ion-note>
+        <ion-item lines="none">
+          <ion-avatar slot="start">
+            <img src="assets/default-avatar.png" alt="author" />
+          </ion-avatar>
+          <ion-label>
+            <h3>{{ r.author || 'Anonymous' }}</h3>
+            <p>{{ r.date | date:'dd MMM, HH:mm' }}</p>
+          </ion-label>
+        </ion-item>
       </ion-card-header>
+
       <ion-card-content>
-        <p class="pregunta">“{{ r.texto }}”</p>
-        <div class="respuesta">
-          <strong>Tú:</strong> {{ r.respuesta }}
+        <p class="question">“{{ r.text }}”</p>
+        <div class="reply">
+          <strong>You:</strong> {{ r.reply }}
         </div>
       </ion-card-content>
     </ion-card>
   </ion-list>
+
+  <ng-template #noReplies>
+    <ion-text color="medium" class="ion-text-center ion-margin-top">
+      <p>No replies yet.</p>
+    </ion-text>
+  </ng-template>
 </ion-content>

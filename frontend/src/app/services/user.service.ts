@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 
-export interface Usuario {
-  nombre: string;
+export interface User {
+  name: string;
   avatar: string;
   bio: string;
 }
@@ -10,17 +10,17 @@ export interface Usuario {
   providedIn: 'root'
 })
 export class UserService {
-  private usuario: Usuario = {
-    nombre: 'Pedro',
+  private user: User = {
+    name: 'Pedro',
     avatar: 'assets/avatar.png',
     bio: 'Creador de Anonapp. A veces respondo, otras pienso.',
   };
 
-  obtenerUsuario(): Usuario {
-    return this.usuario;
+  getUser(): User {
+    return this.user;
   }
 
-  actualizarUsuario(datos: Partial<Usuario>) {
-    this.usuario = { ...this.usuario, ...datos };
+  updateUser(data: Partial<User>) {
+    this.user = { ...this.user, ...data };
   }
 }

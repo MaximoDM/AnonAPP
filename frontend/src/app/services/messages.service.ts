@@ -1,43 +1,43 @@
 import { Injectable } from '@angular/core';
 
-export interface Mensaje {
-  autor: string;
-  texto: string;
-  esAnonimo: boolean;
-  fecha: Date;
-  respuesta: string | null;
+export interface Message {
+  author: string;
+  text: string;
+  isAnonymous: boolean;
+  date: Date;
+  reply: string | null;
 }
 
 @Injectable({
   providedIn: 'root'
 })
 export class MessagesService {
-  private mensajes: Mensaje[] = [
-    { autor: 'Anónimo', texto: '¿Qué te motiva cada día?', esAnonimo: true, fecha: new Date(), respuesta: null },
-    { autor: 'Pedro', texto: 'Buen trabajo con la app.', esAnonimo: false, fecha: new Date(), respuesta: 'Gracias.' },
-    { autor: 'María', texto: '¿Cuál fue tu mejor decisión?', esAnonimo: false, fecha: new Date(), respuesta: 'Tomarme en serio mis ideas.' }
+  private messages: Message[] = [
+    { author: 'Anónimo', text: '¿Qué te motiva cada día?', isAnonymous: true, date: new Date(), reply: null },
+    { author: 'Pedro', text: 'Buen trabajo con la app.', isAnonymous: false, date: new Date(), reply: 'Gracias.' },
+    { author: 'María', text: '¿Cuál fue tu mejor decisión?', isAnonymous: false, date: new Date(), reply: 'Tomarme en serio mis ideas.' }
   ];
 
-  obtenerTodos(): Mensaje[] {
-    return this.mensajes;
+  getAll(): Message[] {
+    return this.messages;
   }
 
-  obtenerPendientes(): Mensaje[] {
-    return this.mensajes.filter(m => !m.respuesta);
+  getPending(): Message[] {
+    return this.messages.filter(m => !m.reply);
   }
 
-  obtenerRespondidos(): Mensaje[] {
-    return this.mensajes.filter(m => m.respuesta);
+  getReplied(): Message[] {
+    return this.messages.filter(m => m.reply);
   }
 
-  responder(mensaje: Mensaje, textoRespuesta: string): void {
-    const idx = this.mensajes.indexOf(mensaje);
+  replyTo(message: Message, replyText: string): void {
+    const idx = this.messages.indexOf(message);
     if (idx !== -1) {
-      this.mensajes[idx].respuesta = textoRespuesta.trim();
+      this.messages[idx].reply = replyText.trim();
     }
   }
 
-  descartar(mensaje: Mensaje): void {
-    this.mensajes = this.mensajes.filter(m => m !== mensaje);
+  discard(message: Message): void {
+    this.messages = this.messages.filter(m => m !== message);
   }
 }

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { MessagesService, Mensaje } from 'src/app/services/messages.service';
-import { UserService, Usuario } from 'src/app/services/user.service';
+import { MessagesService, Message } from 'src/app/services/messages.service';
+import { UserService, User } from 'src/app/services/user.service';
 
 @Component({
   selector: 'app-profile',
@@ -9,8 +9,8 @@ import { UserService, Usuario } from 'src/app/services/user.service';
   styleUrls: ['./profile.page.scss']
 })
 export class ProfilePage implements OnInit {
-  usuario!: Usuario;
-  respuestas: Mensaje[] = [];
+  user: User = { name: '', avatar: '', bio: '' };
+  replies: Message[] = [];
 
   constructor(
     private msgService: MessagesService,
@@ -18,11 +18,16 @@ export class ProfilePage implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.usuario = this.userService.obtenerUsuario();
-    this.respuestas = this.msgService.obtenerRespondidos();
+    this.user = this.userService.getUser();
+    this.replies = this.msgService.getReplied();
   }
 
-  abrirAjustes() {
-    console.log('Ir a settings');
+  openSettings() {
+    console.log('Go to settings');
   }
+
+  trackById(index: number, item: Message) {
+    return index;
+  }
+
 }
