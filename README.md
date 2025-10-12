@@ -124,7 +124,16 @@ Header: Authorization: Bearer <token>
 ⚙️ Integración con el frontend Ionic + Angular en desarrollo
 🚀 Próximas mejoras: notificaciones, sistema de seguidores y ranking de usuarios
 
-
+---
 ## 📦 Colección Postman
 
 [![Run in Postman](https://run.pstmn.io/button.svg)](https://interstellar-meadow-612657.postman.co/workspace/New-Team-Workspace~01c0cc51-a238-427b-b6c9-4227ed824654/collection/20352484-7b10f161-bb19-458b-96b6-34a6e493de67?action=share&creator=20352484)
+
+---
+## 🧩 Configuración del entorno
+
+Copia el archivo `.env.example` y renómbralo como `.env`:
+
+```bash
+cp .env.example .env
+---
