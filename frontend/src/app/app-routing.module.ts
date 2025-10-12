@@ -29,8 +29,12 @@ const routes: Routes = [
   path: '',
   redirectTo: localStorage.getItem('token') ? '/feed' : '/login',
   pathMatch: 'full'
-}
-
+  },
+  {
+    path: '**',
+    redirectTo: localStorage.getItem('token') ? '/feed' : '/login',
+    pathMatch: 'full'
+  }
 ];
 
 
