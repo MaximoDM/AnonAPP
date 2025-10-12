@@ -1,0 +1,25 @@
+.settings-popover {
+  min-width: 200px;
+  background: #121212;
+  color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+
+  ion-item {
+    --background: transparent;
+    --color: #fff;
+    font-weight: 500;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    ion-icon {
+      color: var(--ion-color-primary);
+    }
+
+    &[color="danger"] ion-icon {
+      color: #ff5252;
+    }
+  }
+}

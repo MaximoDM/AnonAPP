@@ -1,43 +1,70 @@
 import { Injectable } from '@angular/core';
-
-export interface Message {
-  author: string;
-  text: string;
-  isAnonymous: boolean;
-  date: Date;
-  reply: string | null;
-}
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Observable, map } from 'rxjs';
+import { Message } from '../models/message.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class MessagesService {
-  private messages: Message[] = [
-    { author: 'Anónimo', text: '¿Qué te motiva cada día?', isAnonymous: true, date: new Date(), reply: null },
-    { author: 'Pedro', text: 'Buen trabajo con la app.', isAnonymous: false, date: new Date(), reply: 'Gracias.' },
-    { author: 'María', text: '¿Cuál fue tu mejor decisión?', isAnonymous: false, date: new Date(), reply: 'Tomarme en serio mis ideas.' }
-  ];
+  private apiUrl = 'http://localhost:8080/api';
 
-  getAll(): Message[] {
-    return this.messages;
+  constructor(private http: HttpClient) {}
+
+  private getAuthHeaders(): HttpHeaders {
+    const token = localStorage.getItem('token');
+    return new HttpHeaders({
+      'Authorization': token ? `Bearer ${token}` : '',
+      'Content-Type': 'application/json',
+    });
   }
 
-  getPending(): Message[] {
-    return this.messages.filter(m => !m.reply);
+  getAll(): Observable<Message[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/messages`, {
+      headers: this.getAuthHeaders(),
+    }).pipe(map(list => list.map(Message.fromApi)));
   }
 
-  getReplied(): Message[] {
-    return this.messages.filter(m => m.reply);
+  getAllForUser(alias: string): Observable<Message[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/messages/${alias}/messages`, {
+      headers: this.getAuthHeaders(),
+    }).pipe(map(list => list.map(Message.fromApi)));
   }
 
-  replyTo(message: Message, replyText: string): void {
-    const idx = this.messages.indexOf(message);
-    if (idx !== -1) {
-      this.messages[idx].reply = replyText.trim();
-    }
+  getPending(): Observable<Message[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/messages?status=pending`, {
+      headers: this.getAuthHeaders(),
+    }).pipe(map(list => list.map(Message.fromApi)));
   }
 
-  discard(message: Message): void {
-    this.messages = this.messages.filter(m => m !== message);
+  sendMessage(targetAlias: string, text: string, anonymous = false): Observable<any> {
+    const body = { body: text, anonymous };
+    return this.http.post(`${this.apiUrl}/profile/${targetAlias}/messages`, body, {
+      headers: this.getAuthHeaders(),
+    });
+  }
+
+  replyTo(id: number, replyText: string): Observable<any> {
+    return this.http.put(`${this.apiUrl}/messages/${id}/reply`, { body: replyText }, {
+      headers: this.getAuthHeaders(),
+    });
+  }
+
+  reject(id: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/messages/${id}/reject`, {
+      headers: this.getAuthHeaders(),
+    });
+  }
+
+  delete(id: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/messages/${id}/delete`, {
+      headers: this.getAuthHeaders(),
+    });
+  }
+
+  vote(id: number, type: 'like' | 'dislike'): Observable<any> {
+    return this.http.post(`${this.apiUrl}/messages/${id}/vote`, { type }, {
+      headers: this.getAuthHeaders(),
+    });
   }
 }

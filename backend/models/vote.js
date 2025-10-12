@@ -17,6 +17,7 @@ module.exports = (sequelize, Sequelize) => {
       },
       type: {
         type: Sequelize.ENUM("like", "dislike"),
+        allowNull: false,
         defaultValue: "like",
       },
     },
@@ -25,13 +26,30 @@ module.exports = (sequelize, Sequelize) => {
       timestamps: true,
       createdAt: "createdAt",
       updatedAt: "updatedAt",
-      indexes: [{ unique: true, fields: ["userId", "messageId"] }],
+      indexes: [
+        {
+          unique: true,
+          fields: ["userId", "messageId"], 
+        },
+      ],
     }
   );
 
+
   Vote.associate = (models) => {
-    Vote.belongsTo(models.User, { foreignKey: "userId", as: "user" });
-    Vote.belongsTo(models.Message, { foreignKey: "messageId", as: "message" });
+    Vote.belongsTo(models.User, {
+      foreignKey: "userId",
+      as: "user",
+      onDelete: "CASCADE",
+      onUpdate: "CASCADE",
+    });
+
+    Vote.belongsTo(models.Message, {
+      foreignKey: "messageId",
+      as: "message",
+      onDelete: "CASCADE",
+      onUpdate: "CASCADE",
+    });
   };
 
   return Vote;

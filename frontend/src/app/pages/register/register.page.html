@@ -1,13 +1,63 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>register</ion-title>
+<ion-header>
+  <ion-toolbar color="light">
+    <ion-title class="ion-text-center">Registro</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">register</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content [fullscreen]="true" class="ion-padding">
+
+  <form (ngSubmit)="register()" [formGroup]="registerForm" novalidate>
+
+    <ion-item>
+      <ion-label position="floating">Email</ion-label>
+      <ion-input
+        type="email"
+        formControlName="email"
+        inputmode="email"
+        autocomplete="username"
+        required>
+      </ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">Alias</ion-label>
+      <ion-input
+        type="text"
+        formControlName="alias"
+        maxlength="30"
+        autocomplete="nickname"
+        required>
+      </ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">Contraseña</ion-label>
+      <ion-input
+        type="password"
+        formControlName="password"
+        autocomplete="new-password"
+        required>
+      </ion-input>
+    </ion-item>
+
+    <ion-text color="danger" *ngIf="errorMessage" class="ion-text-center ion-margin-top">
+      <p>{{ errorMessage }}</p>
+    </ion-text>
+
+    <ion-button
+      expand="block"
+      color="primary"
+      type="submit"
+      [disabled]="registerForm.invalid">
+      Crear cuenta
+    </ion-button>
+
+  </form>
+
+  <ion-text color="medium" class="ion-text-center ion-margin-top">
+    <p>¿Ya tienes una cuenta?
+      <a routerLink="/login">Iniciar sesión</a>
+    </p>
+  </ion-text>
+
 </ion-content>

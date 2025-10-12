@@ -1,29 +1,38 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
+import { AuthGuard } from './guards/auth.guard';
 
 const routes: Routes = [
- { path: '', redirectTo: 'feed', pathMatch: 'full' },
-  {
-    path: 'home',
-    loadChildren: () => import('./pages/home/home.module').then( m => m.HomePageModule)
-  },
-  {
-    path: 'login',
-    loadChildren: () => import('./pages/login/login.module').then( m => m.LoginPageModule)
-  },
-  {
-    path: 'register',
-    loadChildren: () => import('./pages/register/register.module').then( m => m.RegisterPageModule)
-  },
   {
     path: 'feed',
-    loadChildren: () => import('./pages/feed/feed.module').then( m => m.FeedPageModule)
+    loadChildren: () => import('./pages/feed/feed.module').then(m => m.FeedPageModule),
+    canActivate: [AuthGuard]  
   },
   {
     path: 'profile',
-    loadChildren: () => import('./pages/profile/profile.module').then( m => m.ProfilePageModule)
+    loadChildren: () => import('./pages/profile/profile.module').then(m => m.ProfilePageModule),
+    canActivate: [AuthGuard]
   },
+  {
+    path: 'profile/:alias',
+    loadChildren: () => import('./pages/profile/profile.module').then(m => m.ProfilePageModule)
+  },
+  {
+    path: 'login',
+    loadChildren: () => import('./pages/login/login.module').then(m => m.LoginPageModule)
+  },
+  {
+    path: 'register',
+    loadChildren: () => import('./pages/register/register.module').then(m => m.RegisterPageModule)
+  },
+  {
+  path: '',
+  redirectTo: localStorage.getItem('token') ? '/feed' : '/login',
+  pathMatch: 'full'
+}
+
 ];
+
 
 @NgModule({
   imports: [

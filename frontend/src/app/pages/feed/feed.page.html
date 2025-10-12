@@ -1,51 +1,64 @@
 <ion-header>
   <ion-toolbar color="light">
-    <ion-title class="ion-text-center">Received Messages</ion-title>
+    <ion-title class="ion-text-center">Mensajes recibidos</ion-title>
     <ion-buttons slot="end">
-      <ion-button routerLink="/profile">
+      <ion-button [routerLink]="['/profile', user.alias]">
         <ion-icon slot="icon-only" name="person-circle-outline"></ion-icon>
       </ion-button>
     </ion-buttons>
+    <ion-buttons slot="end">
+  <ion-button (click)="openSettings($event)" aria-label="Abrir ajustes">
+    <ion-icon slot="icon-only" name="settings-outline"></ion-icon>
+  </ion-button>
+</ion-buttons>
+
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true" class="ion-padding">
-  <ion-list>
-    <ion-card *ngFor="let msg of messages" class="message-card">
+  <ion-list *ngIf="messages.length > 0; else noMessages">
+    <ion-card *ngFor="let msg of messages; trackBy: trackById"
+              [ngClass]="msg.isAnonymous ? 'anon' : 'public'">
+
       <ion-card-header>
         <ion-card-subtitle>
-          {{ msg.isAnonymous ? 'Anonymous' : msg.author }}
+          {{ msg.isAnonymous ? 'Anónimo' : (msg.author || 'Usuario') }}
         </ion-card-subtitle>
-        <ion-note>{{ msg.date | date:'short' }}</ion-note>
+        <ion-note>{{ msg.date | date:'dd MMM, HH:mm' }}</ion-note>
       </ion-card-header>
 
       <ion-card-content>
         <p class="text">{{ msg.text }}</p>
 
         <div *ngIf="msg.reply" class="reply">
-          <strong>You:</strong> {{ msg.reply }}
+          <strong>Tú:</strong> {{ msg.reply }}
         </div>
 
         <ion-buttons *ngIf="!msg.reply" class="actions">
           <ion-button color="primary" fill="outline" (click)="openModal(msg)">
-            Reply
+            Responder
           </ion-button>
-          <ion-button color="medium" fill="clear" (click)="discard(msg)">
-            Discard
+          <ion-button color="medium" fill="clear" (click)="reject(msg)">
+            Descartar
           </ion-button>
         </ion-buttons>
       </ion-card-content>
     </ion-card>
   </ion-list>
 
-  <!-- Reply Modal -->
+  <ng-template #noMessages>
+    <ion-text color="medium" class="ion-text-center ion-margin-top">
+      <p>No tienes mensajes nuevos.</p>
+    </ion-text>
+  </ng-template>
+
   <ion-modal [isOpen]="modalOpen" (didDismiss)="closeModal()">
     <ng-template>
       <ion-header>
         <ion-toolbar>
-          <ion-title>Reply to Message</ion-title>
+          <ion-title>Responder mensaje</ion-title>
           <ion-buttons slot="end">
-            <ion-button (click)="closeModal()">Close</ion-button>
+            <ion-button (click)="closeModal()">Cerrar</ion-button>
           </ion-buttons>
         </ion-toolbar>
       </ion-header>
@@ -53,7 +66,7 @@
       <ion-content class="ion-padding">
         <ion-item lines="none">
           <ion-label>
-            <h2>{{ currentMessage?.isAnonymous ? 'Anonymous' : currentMessage?.author }}</h2>
+            <h2>{{ currentMessage?.isAnonymous ? 'Anónimo' : currentMessage?.author }}</h2>
             <p>{{ currentMessage?.date | date:'short' }}</p>
           </ion-label>
         </ion-item>
@@ -66,14 +79,14 @@
 
         <ion-item lines="none">
           <ion-textarea
-            placeholder="Write your reply..."
+            placeholder="Escribe tu respuesta..."
             [(ngModel)]="tempReply"
             autoGrow="true">
           </ion-textarea>
         </ion-item>
 
         <ion-button expand="block" color="primary" (click)="sendReply()">
-          Send Reply
+          Enviar respuesta
         </ion-button>
       </ion-content>
     </ng-template>

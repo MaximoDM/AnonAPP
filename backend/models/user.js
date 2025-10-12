@@ -11,6 +11,10 @@ module.exports = (sequelize, Sequelize) => {
         type: Sequelize.STRING(255),
         allowNull: false,
         unique: true,
+        validate: {
+          isEmail: true,
+          notEmpty: true,
+        },
       },
       passwordHash: {
         type: Sequelize.STRING(255),
@@ -18,17 +22,29 @@ module.exports = (sequelize, Sequelize) => {
       },
       alias: {
         type: Sequelize.STRING(100),
-        allowNull: true,
+        allowNull: false, 
         unique: true,
+        validate: {
+          len: [3, 100],
+          is: /^[a-zA-Z0-9_]+$/,
+        },
       },
-      avatar: Sequelize.STRING(255),
-      bio: Sequelize.STRING(280),
+      avatar: {
+        type: Sequelize.STRING(255),
+        allowNull: true,
+      },
+      bio: {
+        type: Sequelize.STRING(280),
+        allowNull: true,
+      },
       role: {
         type: Sequelize.ENUM("user", "admin"),
+        allowNull: false,
         defaultValue: "user",
       },
       totalMessages: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.INTEGER.UNSIGNED,
+        allowNull: false,
         defaultValue: 0,
       },
     },
@@ -37,8 +53,13 @@ module.exports = (sequelize, Sequelize) => {
       timestamps: true,
       createdAt: "createdAt",
       updatedAt: "updatedAt",
+
       defaultScope: {
         attributes: { exclude: ["passwordHash"] },
+      },
+
+      scopes: {
+        withPassword: { attributes: {} },
       },
     }
   );
