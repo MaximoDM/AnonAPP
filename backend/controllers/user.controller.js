@@ -20,6 +20,15 @@ exports.register = async (req, res) => {
       return res.status(409).json({ error: "user_already_exists" });
     }
 
+    const existingAlias = await User.findOne({ where: { alias } });
+    if (existingAlias) {
+      return res.status(409).json({ error: "alias_already_exists" });
+    }
+
+    if (password.length < 6) {
+      return res.status(400).json({ error: "weak_password" });
+    }
+
     // Hash de la contraseña
     const passwordHash = await bcrypt.hash(password, 12);
 
@@ -29,7 +38,7 @@ exports.register = async (req, res) => {
       alias,
       passwordHash,
       avatar: null,
-      bio: null,
+      bio: "Me siento calmo, casi diría ecuánime.",
       role: "user"
     });
 

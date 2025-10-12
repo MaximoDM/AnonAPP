@@ -68,7 +68,7 @@ El objetivo es **dar voz a las preguntas** de forma segura y entretenida, manten
 - **RxJS / HttpClient** — comunicación con el backend  
 
 ### 🗄️ Base de datos
-- **MySQL / MariaDB** — base de datos relacional administrada con Sequelize ORM
+- **MySQL** — base de datos relacional administrada con Sequelize ORM
 
 ---
 
@@ -76,13 +76,19 @@ El objetivo es **dar voz a las preguntas** de forma segura y entretenida, manten
 
 | Método | Endpoint | Descripción |
 |--------|-----------|-------------|
-| **POST** | `/api/users/register` | Registro de usuario |
-| **POST** | `/api/users/login` | Autenticación de usuario |
-| **GET** | `/api/profile/:alias` | Obtener perfil público con feed |
-| **POST** | `/api/profile/:alias/messages` | Enviar mensaje a un perfil |
-| **GET** | `/api/messages` | Listar mensajes recibidos |
-| **POST** | `/api/messages/:id/reply` | Responder a un mensaje |
-| **DELETE** | `/api/messages/:id/discard` | Descartar un mensaje |
+| **POST** | `/api/users/register` | Registro de usuario nuevo |
+| **POST** | `/api/users/login` | Inicio de sesión (retorna token y alias) |
+| **GET** | `/api/users/profile` | Obtener el perfil del usuario autenticado |
+| **GET** | `/api/users/profile/:alias` | Obtener el perfil de otro usuario |
+| **PUT** | `/api/users/update` | Actualizar información del usuario (bio, etc.) |
+| **POST** | `/api/users/avatar` | Subir o actualizar avatar |
+| **GET** | `/api/profile/:alias` | Obtener perfil público (visible sin login) |
+| **POST** | `/api/profile/:alias/messages` | Enviar mensaje a un usuario |
+| **GET** | `/api/messages` | Listar todos los mensajes recibidos del usuario actual |
+| **GET** | `/api/messages/:alias/messages` | Listar mensajes enviados a un usuario específico |
+| **PUT** | `/api/messages/:id/reply` | Responder a un mensaje recibido |
+| **DELETE** | `/api/messages/:id/reject` | Rechazar (descartar) un mensaje |
+| **DELETE** | `/api/messages/:id/delete` | Eliminar un mensaje |
 | **POST** | `/api/messages/:id/vote` | Votar o reaccionar a una respuesta |
 
 ---
@@ -127,6 +133,8 @@ Header: Authorization: Bearer <token>
 ---
 ## 📦 Colección Postman
 
+Puedes probar todos los endpoints directamente en Postman:
+
 [![Run in Postman](https://run.pstmn.io/button.svg)](https://interstellar-meadow-612657.postman.co/workspace/New-Team-Workspace~01c0cc51-a238-427b-b6c9-4227ed824654/collection/20352484-7b10f161-bb19-458b-96b6-34a6e493de67?action=share&creator=20352484)
 
 ---
@@ -136,4 +144,4 @@ Copia el archivo `.env.example` y renómbralo como `.env`:
 
 ```bash
 cp .env.example .env
----
+```
