@@ -1,53 +1,38 @@
-import { User } from './user.model';
-
-export interface RawMessage {
-  id: number;
-  body: string;
-  reply?: string | null;
-  createdAt: string;
-  status?: string;
-  visible?: boolean;
-  fromUser?: {
-    alias?: string;
-    avatar?: string;
-  } | null;
-}
-
+// message.model.ts
 export class Message {
-  id!: number;
-  text!: string;
-  reply?: string | null;
-  date!: Date;
+  id?: number;
+  text: string;
+  reply?: string;
+  isAnonymous: boolean;
   author?: string | null;
   avatar?: string | null;
-  isAnonymous!: boolean;
+  date?: Date;
   status?: string;
-  visible?: boolean;
+  // ... lo que ya tuvieras (votes, etc.)
 
- constructor(data: Partial<Message> = {}) {
-    Object.assign(this, data);
+  constructor(data: Partial<Message> = {}) {
+    this.id = data.id;
+    this.text = data.text ?? '';
+    this.reply = data.reply ?? undefined;
+    this.isAnonymous = !!data.isAnonymous;
+    this.author = data.author ?? null;
+    this.avatar = data.avatar ?? null;
+    this.date = data.date ? new Date(data.date) : undefined;
+    this.status = data.status;
   }
 
+  static fromApi(api: any): Message {
+    const isAnon = !!api.isAnonymous;
 
-  static fromApi(apiData: RawMessage): Message {
     return new Message({
-      id: apiData.id,
-      text: apiData.body,
-      reply: apiData.reply,
-      date: new Date(apiData.createdAt),
-      author: apiData.fromUser?.alias || null,
-      avatar: apiData.fromUser?.avatar || null,
-      isAnonymous: !apiData.fromUser,
-      status: apiData.status,
-      visible: apiData.visible,
+      id: api.id,
+      text: api.body,
+      reply: api.reply,
+      isAnonymous: isAnon,
+      author: isAnon ? null : (api.fromUser?.alias ?? api.author ?? null),
+      avatar: isAnon ? null : (api.fromUser?.avatar ?? api.avatar ?? null),
+      date: api.createdAt,
+      status: api.status,
     });
-  }
-
-  get shortText(): string {
-    return this.text.length > 100 ? this.text.slice(0, 100) + '…' : this.text;
-  }
-
-  get isReplied(): boolean {
-    return this.status === 'replied' && !!this.reply;
   }
 }

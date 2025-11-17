@@ -1,123 +1,164 @@
-<ion-header>
-  <ion-toolbar color="light">
-    <ion-title class="ion-text-center">
-      AnonApp
-    </ion-title>
+<app-main-header
+  [showProfileButton]="false"
+  [showSettingsButton]="true"
+></app-main-header>
 
-    <ion-buttons slot="end">
-      <ion-button (click)="openSettings($event)" aria-label="Abrir ajustes">
-        <ion-icon slot="icon-only" name="settings-outline"></ion-icon>
-      </ion-button>
-    </ion-buttons>
-  </ion-toolbar>
-</ion-header>
-
-<ion-content [fullscreen]="true" color="light">
+<ion-content [fullscreen]="true" color="light" class="profile-content">
   <section class="profile-info ion-text-center ion-margin-vertical">
-    <ion-avatar class="avatar-lg ion-margin-auto">
-      <img [src]="user.avatar || 'assets/default-avatar.png'" alt="avatar" />
+    <ion-avatar class="avatar-lg ion-margin-auto" (click)="fileInput.click()">
+      <img
+        [src]="avatarPreview || user.avatarUrl"
+        alt="avatar"
+      />
     </ion-avatar>
 
-    <h2 class="ion-margin-top">{{ user.name || 'Usuario Anónimo' }}</h2>
-
-   <div class="bio-section ion-text-center">
-  <ng-container *ngIf="!editingBio; else editMode">
-    <p class="bio" *ngIf="user.bio; else noBio">{{ user.bio }}</p>
-    <ng-template #noBio>
-      <p class="bio ion-text-muted">Sin biografía.</p>
-    </ng-template>
+    <input
+      #fileInput
+      type="file"
+      accept="image/*"
+      hidden
+      (change)="onFileSelected($event)"
+    />
 
     <ion-button
       *ngIf="isOwnProfile"
+      color="primary"
       size="small"
       fill="clear"
-      color="medium"
-      (click)="editingBio = true"
-      aria-label="Editar biografía">
-      <ion-icon name="create-outline" slot="icon-only"></ion-icon>
+      (click)="fileInput.click()"
+    >
+      Cambiar avatar
     </ion-button>
-  </ng-container>
 
-  <ng-template #editMode>
-    <ion-textarea
-      [(ngModel)]="tempBio"
-      autoGrow="true"
-      maxlength="300"
-      placeholder="Escribe tu biografía..."
-      class="edit-bio-textarea">
-    </ion-textarea>
+    <h2 class="ion-margin-top">{{ user.name || 'Usuario Anónimo' }}</h2>
 
-    <div class="ion-margin-top">
-      <ion-button
-        size="small"
-        color="primary"
-        (click)="saveBio()"
-        [disabled]="savingBio">
-        {{ savingBio ? 'Guardando...' : 'Guardar' }}
-      </ion-button>
+    <div class="bio-section ion-text-center ion-margin-top">
+      <ng-container *ngIf="!editingBio; else editBioTpl">
+        <p class="bio" *ngIf="user.bio; else noBioTpl">
+          {{ user.bio }}
+        </p>
 
-      <ion-button
-        size="small"
-        fill="clear"
-        color="medium"
-        (click)="cancelEdit()">
-        Cancelar
-      </ion-button>
+        <ng-template #noBioTpl>
+          <p class="bio ion-text-muted">Sin biografía.</p>
+        </ng-template>
+
+        <ion-button
+          *ngIf="isOwnProfile"
+          size="small"
+          fill="clear"
+          color="medium"
+          (click)="editBio()"
+          aria-label="Editar biografía"
+        >
+          <ion-icon name="create-outline" slot="icon-only"></ion-icon>
+        </ion-button>
+      </ng-container>
+
+      <ng-template #editBioTpl>
+        <ion-textarea
+          [(ngModel)]="tempBio"
+          autoGrow="true"
+          maxlength="300"
+          placeholder="Escribe tu biografía..."
+          class="edit-bio-textarea"
+        ></ion-textarea>
+
+        <div class="ion-margin-top">
+          <ion-button
+            size="small"
+            color="primary"
+            (click)="saveBio()"
+            [disabled]="savingBio || !tempBio.trim()"
+          >
+            {{ savingBio ? 'Guardando...' : 'Guardar' }}
+          </ion-button>
+
+          <ion-button
+            size="small"
+            fill="clear"
+            color="medium"
+            (click)="cancelEdit()"
+          >
+            Cancelar
+          </ion-button>
+        </div>
+      </ng-template>
     </div>
-  </ng-template>
-</div>
-
   </section>
 
-  <ion-card [ngClass]="sendAnon ? 'anon' : 'public'" class="send-message-card ion-margin-vertical">
-    <ion-card-header>
-      <ion-card-title>
-        <ion-icon [name]="sendAnon ? 'eye-off-outline' : 'person-outline'"></ion-icon>
-        &nbsp;Enviar mensaje a <strong>{{ user.alias || 'usuario' }}</strong>
-      </ion-card-title>
-    </ion-card-header>
+<!-- Enviar mensaje -->
+<ion-card
+  *ngIf="!isOwnProfile"
+  [ngClass]="sendAnon ? 'anon' : 'public'"
+  class="send-message-card ion-margin-vertical"
+>
+  <ion-card-header>
+    <ion-card-title>
+      <ion-icon [name]="sendAnon ? 'eye-off-outline' : 'person-outline'"></ion-icon>
+      &nbsp;Enviar mensaje a <strong>{{ user.alias || 'usuario' }}</strong>
+    </ion-card-title>
+  </ion-card-header>
 
-    <ion-card-content>
-      <ion-textarea
-        placeholder="Escribe tu mensaje aquí..."
-        [(ngModel)]="messageText"
-        autoGrow="true"
-        maxlength="1000"
-        class="dark-textarea">
-      </ion-textarea>
+  <ion-card-content>
+    <ion-textarea
+      placeholder="Escribe tu mensaje aquí..."
+      [(ngModel)]="messageText"
+      autoGrow="true"
+      maxlength="1000"
+      class="dark-textarea"
+    ></ion-textarea>
 
-      <ion-item lines="none" class="ion-margin-top toggle-item">
-        <ion-label>Enviar como anónimo</ion-label>
-        <ion-toggle [(ngModel)]="sendAnon" color="tertiary"></ion-toggle>
-      </ion-item>
+    <ion-item lines="none" class="ion-margin-top toggle-item">
+      <ion-label>Enviar como anónimo</ion-label>
+      <ion-toggle [(ngModel)]="sendAnon" color="tertiary"></ion-toggle>
+    </ion-item>
 
-      <ion-button
-        expand="block"
-        color="primary"
-        shape="round"
-        [disabled]="!messageText.trim() || sending"
-        (click)="sendMessage()">
-        <ion-icon name="send-outline" slot="start"></ion-icon>
-        {{ sending ? 'Enviando...' : 'Enviar mensaje' }}
-      </ion-button>
-    </ion-card-content>
-  </ion-card>
+    <ion-button
+      expand="block"
+      color="primary"
+      shape="round"
+      [disabled]="!messageText.trim() || sending"
+      (click)="sendMessage()"
+    >
+      <ion-icon name="send-outline" slot="start"></ion-icon>
+      {{ sending ? 'Enviando...' : 'Enviar mensaje' }}
+    </ion-button>
+  </ion-card-content>
+</ion-card>
+
 
   <ion-list *ngIf="replies.length > 0; else noReplies" class="ion-margin-top">
     <ion-card
       *ngFor="let r of replies; trackBy: trackById"
-      [ngClass]="r.isAnonymous ? 'anon reply-card' : 'public reply-card'">
-
+      [ngClass]="r.isAnonymous ? 'anon reply-card' : 'public reply-card'"
+    >
       <ion-card-header>
         <ion-item lines="none">
           <ion-avatar slot="start">
-            <img [src]="r.isAnonymous ? 'assets/anon.png' : (r.avatar || 'assets/default-avatar.png')" />
+            <img
+              [src]="
+                r.isAnonymous
+                  ? 'assets/anon.png'
+                  : (r.avatar || 'assets/default-avatar.png')
+              "
+            />
           </ion-avatar>
 
           <ion-label>
             <h3>{{ r.isAnonymous ? 'Anónimo' : (r.author || 'Usuario') }}</h3>
-            <p>{{ r.date | date:'dd MMM, HH:mm' }}</p>
+            <p>{{ r.date | date: 'dd MMM, HH:mm' }}</p>
           </ion-label>
+
+          <ion-buttons slot="end" *ngIf="canDeleteMessages">
+            <ion-button
+              fill="clear"
+              color="danger"
+              (click)="onDeleteReply(r)"
+              aria-label="Borrar mensaje"
+            >
+              <ion-icon name="trash-outline" slot="icon-only"></ion-icon>
+            </ion-button>
+          </ion-buttons>
         </ion-item>
       </ion-card-header>
 

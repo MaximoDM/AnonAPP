@@ -1,0 +1,26 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title class="header-logo-title">
+      <img src="assets/icon/anonlogo.png" alt="AnonApp" (click)="goPanel()" />
+      <span *ngIf="title" class="header-title-text">{{ title }}</span>
+    </ion-title>
+
+    <ion-buttons slot="end">
+      <ion-button
+        *ngIf="showProfileButton"
+        (click)="goProfile()"
+        aria-label="Ir a mi perfil"
+      >
+        <ion-icon slot="icon-only" name="person-circle-outline"></ion-icon>
+      </ion-button>
+
+      <ion-button
+        *ngIf="showSettingsButton"
+        (click)="openSettings($event)"
+        aria-label="Abrir ajustes"
+      >
+        <ion-icon slot="icon-only" name="settings-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>

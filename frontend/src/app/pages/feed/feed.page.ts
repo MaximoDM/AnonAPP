@@ -3,9 +3,6 @@ import { MessagesService } from 'src/app/services/messages.service';
 import { UserService } from 'src/app/services/user.service';
 import { User } from 'src/app/models/user.model';
 import { Message } from 'src/app/models/message.model';
-import { PopoverController } from '@ionic/angular';
-import { SettingsPopoverComponent } from 'src/app/pages/settings-popover/settings-popover.component';
-
 
 @Component({
   selector: 'app-feed',
@@ -24,8 +21,7 @@ export class FeedPage implements OnInit {
 
   constructor(
     private msgService: MessagesService,
-    private userService: UserService,
-    private popoverCtrl: PopoverController  
+    private userService: UserService
   ) {}
 
   ngOnInit() {
@@ -38,7 +34,7 @@ export class FeedPage implements OnInit {
       next: (u: User) => {
         this.user = u;
       },
-      error: (err) => {
+      error: () => {
         this.errorMessage = 'Error al cargar el usuario actual.';
       },
     });
@@ -48,13 +44,15 @@ export class FeedPage implements OnInit {
     this.loading = true;
     this.msgService.getAll().subscribe({
       next: (msgs) => {
-        this.messages = msgs.filter(m => !m.reply && m.status !== 'rejected');
+        this.messages = msgs.filter(
+          (m) => !m.reply && m.status !== 'rejected'
+        );
         this.loading = false;
       },
-      error: (err) => {
+      error: () => {
         this.errorMessage = 'Error al cargar mensajes.';
         this.loading = false;
-      }
+      },
     });
   }
 
@@ -78,14 +76,12 @@ export class FeedPage implements OnInit {
         this.closeModal();
         this.loadMessages();
       },
-      error: (err) => {
+      error: () => {
         this.errorMessage = 'Error al enviar respuesta.';
       },
     });
   }
 
-
-  // De momento lo borramos pero mi interés es mantenerlo por si acaso luego lo queremos 
   reject(msg: Message) {
     if (!msg.id) return;
 
@@ -94,22 +90,11 @@ export class FeedPage implements OnInit {
       error: (err) => {
         console.error(err);
         this.errorMessage = 'Error al rechazar mensaje.';
-      }
+      },
     });
   }
 
   trackById(index: number, item: Message) {
     return item.id ?? index;
   }
-
-  async openSettings(ev: Event) {
-  const popover = await this.popoverCtrl.create({
-    component: SettingsPopoverComponent,
-    event: ev,
-    translucent: true,
-    cssClass: 'settings-popover-style'
-  });
-    await popover.present();
-  }
-
 }

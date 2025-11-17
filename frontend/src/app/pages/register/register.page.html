@@ -1,8 +1,9 @@
-<ion-header>
-  <ion-toolbar color="light">
-    <ion-title class="ion-text-center">Registro</ion-title>
-  </ion-toolbar>
-</ion-header>
+<app-main-header
+  [showProfileButton]="false"
+  [showSettingsButton]="false"
+></app-main-header>
+
+
 
 <ion-content [fullscreen]="true" class="ion-padding">
 
@@ -40,7 +41,11 @@
       </ion-input>
     </ion-item>
 
-    <ion-text color="danger" *ngIf="errorMessage" class="ion-text-center ion-margin-top">
+    <ion-text
+      color="danger"
+      *ngIf="errorMessage"
+      class="ion-text-center ion-margin-top"
+    >
       <p>{{ errorMessage }}</p>
     </ion-text>
 

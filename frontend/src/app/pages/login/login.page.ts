@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from 'src/app/services/auth.service';
+import { AppStorageService } from 'src/app/services/app-storage'; 
 
 @Component({
   selector: 'app-login',
@@ -16,7 +17,8 @@ export class LoginPage implements OnInit {
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private appStorage: AppStorageService
   ) {}
 
   ngOnInit() {
@@ -30,18 +32,20 @@ export class LoginPage implements OnInit {
     if (this.loginForm.invalid) return;
 
     this.authService.login(this.loginForm.value).subscribe({
-      next: (res) => {
-        if (res.token) localStorage.setItem('token', res.token);
+      next: async (res) => {
+        if (res.token) {
+          await this.appStorage.set('token', res.token);
+        }
+
+        await this.appStorage.set('userId', String(res.id));
+        await this.appStorage.set('alias', res.alias || '');
+        await this.appStorage.set('isLoggedIn', 'true');
 
         if (document.activeElement instanceof HTMLElement) {
           document.activeElement.blur();
         }
 
-        localStorage.setItem('userId', String(res.id));
-        localStorage.setItem('alias', res.alias || '');
-        localStorage.setItem('isLoggedIn', 'true');
-
-        this.router.navigate(['/profile', res.alias], { replaceUrl: true });
+        await this.goToMyProfile();
       },
       error: (err) => {
         this.errorMessage =
@@ -49,4 +53,12 @@ export class LoginPage implements OnInit {
       }
     });
   }
+
+
+  async goToMyProfile() {
+  const alias = await this.appStorage.get<string>('alias');
+  if (alias) {
+    this.router.navigate(['/profile', alias]);
+  }
+}
 }

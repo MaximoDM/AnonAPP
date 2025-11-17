@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { RouterModule, Routes } from '@angular/router';
 import { FeedPage } from './feed.page';
+import { SharedModule } from 'src/app/shared/shared-module';
 
 const routes: Routes = [
   { path: '', component: FeedPage }
@@ -14,6 +15,7 @@ const routes: Routes = [
     CommonModule,
     FormsModule,
     IonicModule,
+    SharedModule,
     RouterModule.forChild(routes)
   ],
   declarations: [FeedPage]

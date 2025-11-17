@@ -30,7 +30,7 @@ module.exports = (sequelize, Sequelize) => {
         },
       },
       avatar: {
-        type: Sequelize.STRING(255),
+        type: Sequelize.TEXT('long'),
         allowNull: true,
       },
       bio: {
@@ -63,6 +63,30 @@ module.exports = (sequelize, Sequelize) => {
       },
     }
   );
+
+      User.associate = (models) => {
+      User.hasMany(models.Message, {
+        foreignKey: "from",
+        as: "sentMessages",
+        onDelete: "SET NULL",
+        onUpdate: "CASCADE",
+      });
+
+      User.hasMany(models.Message, {
+        foreignKey: "to",
+        as: "receivedMessages",
+        onDelete: "CASCADE",
+        onUpdate: "CASCADE",
+      });
+
+      User.hasMany(models.Vote, {
+        foreignKey: "userId",
+        as: "votes",
+        onDelete: "CASCADE",
+        onUpdate: "CASCADE",
+      });
+    };
+
 
   return User;
 };

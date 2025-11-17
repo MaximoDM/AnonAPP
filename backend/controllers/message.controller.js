@@ -4,13 +4,12 @@ const Message = db.Message;
 const Vote = db.Vote;
 const User = db.User;
 
-
 exports.getReceived = async (req, res) => {
   try {
     const messages = await Message.findAll({
       where: {
         to: req.user.uid,
-        status: { [Op.ne]: "rejected" }, // evita mostrar mensajes descartados
+        status: { [Op.ne]: "rejected" },
       },
       include: [
         {
@@ -32,10 +31,10 @@ exports.getReceived = async (req, res) => {
 
 exports.getAllForUser = async (req, res) => {
   try {
-
-    console.log('getAllForUser llamado con alias:', req.params.alias);
+    console.log("getAllForUser llamado con alias:", req.params.alias);
     const alias = req.params.alias?.toLowerCase();
     if (!alias) return res.status(400).json({ error: "missing_alias" });
+
     const user = await User.findOne({ where: { alias } });
     if (!user) return res.status(404).json({ error: "user_not_found" });
 
@@ -70,7 +69,7 @@ exports.replyTo = async (req, res) => {
     await msg.update({
       reply: replyText,
       status: "replied",
-      visible: true, 
+      visible: true,
       repliedAt: new Date(),
     });
 
@@ -81,15 +80,18 @@ exports.replyTo = async (req, res) => {
   }
 };
 
-
 exports.reject = async (req, res) => {
   try {
-    const msg = await Message.findOne({
-      where: { id: req.params.id, to: req.user.uid },
-    });
+    const msg = await Message.findByPk(req.params.id);
 
     if (!msg) {
       return res.status(404).json({ error: "not_found" });
+    }
+
+    const isOwner = msg.to === req.user.uid;
+
+    if (!req.user.isAdmin && !isOwner) {
+      return res.status(403).json({ error: "forbidden" });
     }
 
     await msg.update({
@@ -106,12 +108,18 @@ exports.reject = async (req, res) => {
 
 exports.delete = async (req, res) => {
   try {
-    const msg = await Message.findOne({
-      where: { id: req.params.id, to: req.user.uid },
-    });
+    const msg = await Message.findByPk(req.params.id);
+
     if (!msg) {
       return res.status(404).json({ error: "not_found" });
     }
+
+    const isOwner = msg.to === req.user.uid;
+
+    if (!req.user.isAdmin && !isOwner) {
+      return res.status(403).json({ error: "forbidden" });
+    }
+
     await msg.destroy();
     res.json({ ok: true });
   } catch (err) {

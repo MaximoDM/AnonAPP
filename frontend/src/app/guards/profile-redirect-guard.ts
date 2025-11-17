@@ -3,20 +3,21 @@ import { CanActivate, Router } from '@angular/router';
 import { AppStorageService } from 'src/app/services/app-storage';
 
 @Injectable({ providedIn: 'root' })
-export class AuthGuard implements CanActivate {
+export class ProfileRedirectGuard implements CanActivate {
   constructor(
     private router: Router,
     private appStorage: AppStorageService
   ) {}
 
   async canActivate(): Promise<boolean> {
-    const token = await this.appStorage.get<string>('token');
+    const alias = await this.appStorage.get<string>('alias');
 
-    if (!token) {
+    if (alias) {
+      this.router.navigate(['/profile', alias], { replaceUrl: true });
+    } else {
       this.router.navigate(['/login'], { replaceUrl: true });
-      return false;
     }
 
-    return true;
+    return false;
   }
 }

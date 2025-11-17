@@ -1,30 +1,21 @@
-<ion-header>
-  <ion-toolbar color="light">
-    <ion-title class="ion-text-center">Mensajes recibidos</ion-title>
-    <ion-buttons slot="end">
-      <ion-button [routerLink]="['/profile', user.alias]">
-        <ion-icon slot="icon-only" name="person-circle-outline"></ion-icon>
-      </ion-button>
-    </ion-buttons>
-    <ion-buttons slot="end">
-  <ion-button (click)="openSettings($event)" aria-label="Abrir ajustes">
-    <ion-icon slot="icon-only" name="settings-outline"></ion-icon>
-  </ion-button>
-</ion-buttons>
+<app-main-header
+  [showProfileButton]="true"
+  [showSettingsButton]="true"
+  [profileAlias]="user.alias || null"
+></app-main-header>
 
-  </ion-toolbar>
-</ion-header>
 
 <ion-content [fullscreen]="true" class="ion-padding">
   <ion-list *ngIf="messages.length > 0; else noMessages">
-    <ion-card *ngFor="let msg of messages; trackBy: trackById"
-              [ngClass]="msg.isAnonymous ? 'anon' : 'public'">
-
+    <ion-card
+      *ngFor="let msg of messages; trackBy: trackById"
+      [ngClass]="msg.isAnonymous ? 'anon' : 'public'"
+    >
       <ion-card-header>
         <ion-card-subtitle>
           {{ msg.isAnonymous ? 'Anónimo' : (msg.author || 'Usuario') }}
         </ion-card-subtitle>
-        <ion-note>{{ msg.date | date:'dd MMM, HH:mm' }}</ion-note>
+        <ion-note>{{ msg.date | date: 'dd MMM, HH:mm' }}</ion-note>
       </ion-card-header>
 
       <ion-card-content>
@@ -66,8 +57,10 @@
       <ion-content class="ion-padding">
         <ion-item lines="none">
           <ion-label>
-            <h2>{{ currentMessage?.isAnonymous ? 'Anónimo' : currentMessage?.author }}</h2>
-            <p>{{ currentMessage?.date | date:'short' }}</p>
+            <h2>
+              {{ currentMessage?.isAnonymous ? 'Anónimo' : currentMessage?.author }}
+            </h2>
+            <p>{{ currentMessage?.date | date: 'short' }}</p>
           </ion-label>
         </ion-item>
 
@@ -81,8 +74,8 @@
           <ion-textarea
             placeholder="Escribe tu respuesta..."
             [(ngModel)]="tempReply"
-            autoGrow="true">
-          </ion-textarea>
+            autoGrow="true"
+          ></ion-textarea>
         </ion-item>
 
         <ion-button expand="block" color="primary" (click)="sendReply()">

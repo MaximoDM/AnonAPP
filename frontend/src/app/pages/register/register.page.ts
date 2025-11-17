@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from 'src/app/services/auth.service';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-register',
@@ -27,6 +28,7 @@ export class RegisterPage implements OnInit {
     });
   }
 
+
   register() {
     if (this.registerForm.invalid) return;
 
@@ -37,13 +39,36 @@ export class RegisterPage implements OnInit {
         if (document.activeElement instanceof HTMLElement) {
           document.activeElement.blur();
         }
-
+        this.errorMessage = '';
         this.router.navigate(['/login'], { replaceUrl: true });
       },
-      error: (err) => {
-        this.errorMessage =
-          err.error?.message || 'Error al registrar usuario.';
+      error: (err: HttpErrorResponse) => {
+
+        const code = err.error?.error; 
+
+        switch (code) {
+          case 'missing_fields':
+            this.errorMessage = 'Faltan campos obligatorios.';
+            break;
+          case 'user_already_exists':
+            this.errorMessage = 'El email ya está registrado.';
+            break;
+          case 'alias_already_exists':
+            this.errorMessage = 'El alias ya está en uso.';
+            break;
+          case 'weak_password':
+            this.errorMessage = 'La contraseña debe tener al menos 6 caracteres.';
+            break;
+          default:
+            if (err.status === 0) {
+              this.errorMessage = 'No se pudo conectar con el servidor.';
+            } else {
+              this.errorMessage = 'Error al registrar usuario.';
+            }
+            break;
+        }
       }
     });
   }
+
 }

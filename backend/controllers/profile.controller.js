@@ -3,17 +3,21 @@ const { Op } = require("sequelize");
 const User = db.User;
 const Message = db.Message;
 
-
 exports.getPublicProfile = async (req, res) => {
   try {
     const alias = req.params.alias?.toLowerCase();
-    if (!alias) return res.status(400).json({ error: "missing_alias" });
+    if (!alias) {
+      return res.status(400).json({ error: "missing_alias" });
+    }
+
     const user = await User.findOne({
       where: { alias },
       attributes: ["id", "alias", "avatar", "bio", "createdAt"],
     });
 
-    if (!user) return res.status(404).json({ error: "user_not_found" });
+    if (!user) {
+      return res.status(404).json({ error: "user_not_found" });
+    }
 
     const messages = await Message.findAll({
       where: {
@@ -32,53 +36,53 @@ exports.getPublicProfile = async (req, res) => {
       order: [["createdAt", "DESC"]],
     });
 
-    
-
     res.json({
       profile: {
         alias: user.alias,
-        avatar: user.avatar || "assets/default-avatar.png",
+        avatar: user.avatar,
         bio: user.bio || "Sin biografía",
         createdAt: user.createdAt,
       },
       feed: messages,
     });
 
-    console.log('Perfil público obtenido para alias:', alias);
-    console.log('Datos del perfil:', {
-      alias: user.alias,
-      avatar: user.avatar || "assets/default-avatar.png",
-      bio: user.bio || "Sin biografía",
-      createdAt: user.createdAt,
-    });
+    console.log("Perfil público obtenido para alias:", alias);
   } catch (err) {
     console.error("getPublicProfile error:", err);
     res.status(500).json({ error: "server_error" });
   }
 };
 
-
 exports.sendMessage = async (req, res) => {
   try {
     const alias = req.params.alias?.toLowerCase();
-    if (!alias) return res.status(400).json({ error: "missing_alias" });
+    if (!alias) {
+      return res.status(400).json({ error: "missing_alias" });
+    }
 
     const target = await User.findOne({ where: { alias } });
-    if (!target) return res.status(404).json({ error: "target_not_found" });
+    if (!target) {
+      return res.status(404).json({ error: "target_not_found" });
+    }
 
     const body = String(req.body.body || "").trim();
-    if (!body || body.length > 1000)
+    if (!body || body.length > 1000) {
       return res.status(400).json({ error: "invalid_body" });
+    }
 
-    const fromId = req.user.uid; 
-    const isAnon = !!req.body.anonymous; 
+    const fromId = req.user.uid;         
+    const isAnon = !!req.body.anonymous;  
+
+    if (fromId === target.id) {
+      return res.status(400).json({ error: "cannot_message_yourself" });
+    }
 
     await Message.create({
       to: target.id,
-      from: fromId,         
+      from: fromId,
       body,
-      isAnonymous: isAnon,  
-      visible: false,       
+      isAnonymous: isAnon,
+      visible: false,
     });
 
     res.json({ ok: true, sentTo: alias, anonymous: isAnon });
@@ -87,4 +91,3 @@ exports.sendMessage = async (req, res) => {
     res.status(500).json({ error: "server_error" });
   }
 };
-

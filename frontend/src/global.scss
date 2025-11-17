@@ -35,3 +35,32 @@
 /* @import "@ionic/angular/css/palettes/dark.always.css"; */
 /* @import "@ionic/angular/css/palettes/dark.class.css"; */
 @import "@ionic/angular/css/palettes/dark.system.css";
+
+
+.app-shell {
+  max-width: 480px; 
+  margin: 0 auto;   
+  height: 100vh;   
+  overflow: hidden; 
+  display: flex;
+  flex-direction: column;
+}
+
+@media (min-width: 600px) {
+  .app-shell {
+    max-width: 600px;
+  }
+}   
+
+@media (min-width: 1024px) {
+  .app-shell {
+    max-width: 960px;
+  }
+}   
+
+
+.app-shell ion-content {
+  flex: 1;              
+  overflow-y: auto;     
+  -webkit-overflow-scrolling: touch; 
+}   
