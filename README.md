@@ -299,7 +299,7 @@ Header: Authorization: Bearer <token>
 
 ## 📦 Colección Postman Puedes probar todos los endpoints directamente en Postman: 
 
-[![Run in Postman](https://run.pstmn.io/button.svg)](https://interstellar-meadow-612657.postman.co/workspace/New-Team-Workspace~01c0cc51-a238-427b-b6c9-4227ed824654/collection/20352484-7b10f161-bb19-458b-96b6-34a6e493de67?action=share&creator=20352484)
+[![Run in Postman](https://run.pstmn.io/button.svg)](https://interstellar-meadow-612657.postman.co/workspace/New-Team-Workspace~01c0cc51-a238-427b-b6c9-4227ed824654/collection/20352484-cc0e1eb1-a6a9-4b64-aca7-f227c3735f7f?action=share&creator=20352484&active-environment=20352484-f893a8f5-f74a-456b-a425-850fed9992a0)
 
 ---
 
