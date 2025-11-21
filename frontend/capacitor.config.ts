@@ -1,9 +1,13 @@
-import type { CapacitorConfig } from '@capacitor/cli';
+// capacitor.config.ts
+import { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'io.ionic.starter',
-  appName: 'myApp',
-  webDir: 'www'
+  appId: 'com.tu.app',
+  appName: 'Anonapp',
+  webDir: 'www',
+  android: {
+    allowMixedContent: true
+  }
 };
 
 export default config;

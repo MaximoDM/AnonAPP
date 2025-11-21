@@ -325,4 +325,4 @@ npm install
 npm run dev
 
 
-5. Inicia la App Ionic y configura la baseUrl para que apunte al backend (por ejemplo, http://localhost:3000 o la URL desplegada).
+5. Inicia la App Ionic y configura la baseUrl para que apunte al backend (por ejemplo, http://localhost:8080 o la URL desplegada).

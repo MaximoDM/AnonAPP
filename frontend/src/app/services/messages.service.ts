@@ -3,12 +3,12 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, from, map, switchMap, tap } from 'rxjs';
 import { Message } from '../models/message.model';
 import { AppStorageService } from './app-storage';
-
+import { environment } from 'src/environments/environment'; 
 @Injectable({
   providedIn: 'root'
 })
 export class MessagesService {
-  private apiUrl = 'http://localhost:8080/api';
+  private apiUrl = `${environment.apiUrl}`;
 
   constructor(
     private http: HttpClient,

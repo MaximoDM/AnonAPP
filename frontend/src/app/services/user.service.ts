@@ -4,12 +4,12 @@ import { Observable, from } from 'rxjs';
 import { map, switchMap, tap } from 'rxjs/operators';
 import { User } from '../models/user.model';
 import { AppStorageService } from '../services/app-storage';
-
+import { environment } from 'src/environments/environment'; 
 @Injectable({
   providedIn: 'root'
 })
 export class UserService {
-  private apiUrl = 'http://localhost:8080/api';
+  private apiUrl = `${environment.apiUrl}`;
 
   constructor(
     private http: HttpClient,

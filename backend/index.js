@@ -2,27 +2,21 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const db = require("./models");
+
 const app = express();
 
 app.use(
-  cors({
-    origin: process.env.CORS_ORIGIN?.split(",") || ["http://localhost:8100"],
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    credentials: true,
-  })
+  cors()
 );
-
 
 app.use(express.json({ limit: "2mb" }));
 app.use(express.urlencoded({ extended: true }));
-
 
 (async () => {
   try {
     await db.sequelize.authenticate();
     console.log("Database connection established.");
-
-    await db.sequelize.sync({ alter: true });
+    await db.sequelize.sync({ alter: false });
     console.log("Models synchronized.");
   } catch (err) {
     console.error("Database connection failed:", err.message);
@@ -30,21 +24,20 @@ app.use(express.urlencoded({ extended: true }));
   }
 })();
 
-
 app.use("/api/users", require("./routes/user.routes"));
 app.use("/api/messages", require("./routes/message.routes"));
 app.use("/api/profile", require("./routes/profile.routes"));
 
 app.get("/api/status", (_req, res) => res.json({ ok: true }));
+app.get("/ping", (_req, res) => res.send("pong"));
 app.get("/", (_req, res) => res.json({ message: "Welcome to AnonApp API" }));
 
 app.use((_req, res) => res.status(404).json({ error: "not_found" }));
 
-
 const PORT = Number(process.env.PORT) || 8080;
-const server = app.listen(PORT, () =>
-  console.log(` Server running on http://localhost:${PORT}`)
-);
+const HOST = "0.0.0.0";
+
+app.listen(process.env.PORT || 8080)
 
 
 const shutdown = async (code = 0) => {
