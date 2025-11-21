@@ -201,24 +201,26 @@ El backend, al guardar un avatar, usa `sharp` para:
 
 ### 1️⃣ Registro
 
-```json
 POST /api/users/register
+```json
 {
   "email": "ejemplo@correo.com",
   "password": "123456",
   "alias": "pedro"
 }
-
+```
 
 2️⃣ Inicio de sesión
+
 POST /api/users/login
+```json
 {
   "email": "ejemplo@correo.com",
   "password": "123456"
 }
-
+```
 Respuesta (ejemplo):
-
+```json
 {
   "ok": true,
   "token": "<jwt>",
@@ -227,28 +229,28 @@ Respuesta (ejemplo):
   "email": "ejemplo@correo.com",
   "role": "user"
 }
-
+```
 3️⃣ Envío de mensaje a un perfil
 POST /api/profile/pedro/messages
 Header: Authorization: Bearer <token>
-
+```json
 {
   "body": "¿Cuál fue tu experiencia más divertida?",
   "anonymous": true
 }
-
+```
 4️⃣ Responder un mensaje recibido
 PUT /api/messages/123/reply
 Header: Authorization: Bearer <token>
-
+```json
 {
   "body": "Mi experiencia más divertida fue..."
 }
-
+```
 5️⃣ Votar una respuesta
 POST /api/messages/123/vote
 Header: Authorization: Bearer <token>
-
+```json
 {
   "type": "like"
 }
